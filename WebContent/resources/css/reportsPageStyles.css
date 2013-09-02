@@ -1,0 +1,94 @@
+@CHARSET "ISO-8859-1";
+
+.incomeSelectYear{
+	margin-top:50px;
+	margin-left:5%;
+	margin-right:2%;
+	margin-bottom:20px;
+	width:15%;
+	float:left;
+}
+.incomeSelectMonth{
+	margin-top:50px;
+	margin-right:10%;
+	width:15%;
+	float:left;
+}
+.incomeViewButton{
+	margin-top:50px;
+	margin-right:10%;
+	float:left;
+	width:5%;
+}
+#incomePrintButton{
+	position:absolute;
+	margin-top:50px;
+	right:16%;
+	font-size:20px;
+}
+
+.reportTables{
+	margin-right:auto;
+	margin-left:5%;
+	width:80%;
+	font-size:15px;
+}
+
+.reportTables .ui-widget-header{
+	font-size:medium;
+}
+
+#reportsTotalIncome{
+	margin-top:10px;
+	margin-left:65%;
+	font-size:24px;
+	font-weight:bold;
+	color:#89b556;
+}
+
+/** REGION EXPENSE **/
+
+.expenseSelectYear{
+	margin-top:50px;
+	margin-left:5%;
+	margin-right:2%;
+	margin-bottom:20px;
+	width:15%;
+	float:left;
+}
+
+.expenseSelectMonth{
+	margin-top:50px;
+	margin-right:10%;
+	width:15%;
+	float:left;
+}
+
+.expenseSelectCategory{
+	margin-top:50px;
+	margin-right:5%;
+	width:20%;
+	float:left;
+}
+
+.expenseViewButton{
+	margin-top:50px;
+	margin-right:10%;
+	float:left;
+	width:5%;
+}
+
+#expensePrintButton{
+	position:absolute;
+	margin-top:50px;
+	right:16%;
+	font-size:20px;
+}
+
+#reportsTotalExpense{
+	margin-top:10px;
+	margin-left:65%;
+	font-size:24px;
+	font-weight:bold;
+	color:#89b556;
+}

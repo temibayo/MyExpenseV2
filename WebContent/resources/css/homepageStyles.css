@@ -1,0 +1,106 @@
+#summaryWidgetsContainer{
+	margin-top:50px;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%;
+	height:280px;
+}
+
+.homepageExpenseMessage{
+	width:30%;
+	top:0px;
+	height:10px;
+	margin-left:60%;
+	font-size:20px !important;
+	font-weight:600;
+	border:none;
+}
+
+.lastMonthSummary {
+	width:25%;height:200px;
+	float:left;
+	margin-right:0.5%;
+	margin-left:auto;
+	margin-top:20px;
+}
+.lastMonthSummary .ui-widget-header{
+	font-size:medium;
+} 
+.currentMonthSummary {
+	width:25%;height:200px;
+	margin-top:20px;
+	margin-right:5%;
+	float:left;
+}
+.currentMonthSummary .ui-widget-header{
+	font-size:medium;
+} 
+
+
+.expenseGauge{
+	width:40%;height:250px;
+	float:left;
+	margin-top:20px;
+}
+
+.expenseGauge .jqplot-target{
+	
+	
+}
+.expenseGauge .jqplot-meterGauge-tick{
+	color:black;
+}
+
+.expenseGauge .jqplot-meterGauge-label{
+	color:black;
+}
+
+
+
+.expenseBarChart {
+	height:auto; margin-left:160px; /*This class is not working. need to modify from home.xhtml */
+	margin-top:0px;width:800px
+}
+
+#expenseChartContainer{
+	height:350px;
+	margin-top:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%
+}
+
+.noChartDataMessage{
+	font-size:medium;
+	font-style:bold;
+	
+}
+
+#expenseTableContainer{
+	margin-top:0px;
+	margin-bottom:20px;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%;
+	height:auto;
+}
+
+.expenseTable {
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:10px;
+	width:95%;
+	height:auto;
+	font-size:15px !important;
+}
+
+
+.expenseTable .ui-widget-header{
+	font-size:medium;	
+}
+
+
+
+
+	

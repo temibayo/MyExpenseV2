@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+				
+				
+<ui:define name="top">
+		
+	<p:fieldset id="summaryWidgetsContainer">	
+	<h:form> 	
+		<p:panel styleClass="homepageExpenseMessage">
+ 			<h:outputText id="expenseLabel" value="Total Expense: $"/>
+ 			<h:outputText id="expenseValue" value="#{homeBean.expense}"/>
+ 		</p:panel>
+   		<p:panel header="Last Month Summary" styleClass="lastMonthSummary">
+   		    <table width="100%" border="1" cellpadding="11" cellspacing="5" 
+    				rules="rows" frame="hsides">
+       			<tr>
+       				<td>Last Month:</td>
+       				<td align="center"><b>#{homeBean.lastMonthSummary.monthString}</b></td>
+       			</tr>
+       			<tr>
+       				<td>Last Month Expense:</td>
+       				<td align="center"><b>#{homeBean.lastMonthSummary.expense}</b></td>
+       			</tr>
+       			<tr>
+       				<td>Last Month Income:</td>
+       				<td align="center"><b>#{homeBean.lastMonthSummary.income}</b></td>
+       			</tr>
+       			<tr>
+       				<td>Last Month Savings:</td>
+       				<td align="center"><b>#{homeBean.lastMonthSummary.savings}</b></td>
+       			</tr>
+             </table>
+     </p:panel>
+     
+   	 <p:panel header="Current Month Summary" styleClass="currentMonthSummary">
+     		<table width="100%" border="1" cellpadding="11" cellspacing="5" 
+    				rules="rows" frame="hsides">
+       	 		<tr>
+       				<td>Current Month:</td>
+       				<td align="center"><b>#{homeBean.currentMonthSummary.monthString}</b></td>
+       			</tr>
+       			<tr>
+       				<td>Current Month Expense:</td>
+       				<td align="center"><b>#{homeBean.currentMonthSummary.expense}</b></td>
+       			</tr>
+	       		<tr>
+	       			<td>Current Month Income:</td>
+       				<td align="center"><b>#{homeBean.currentMonthSummary.income}</b></td>
+       			</tr>
+       			<tr>
+       				<td>Current Month Savings:</td>
+	       			<td align="center"><b>#{homeBean.currentMonthSummary.savings}</b></td>
+	       		</tr>
+       		 </table>
+    </p:panel>
+    	
+    	<p:meterGaugeChart id="monthExpense" value="#{homeBean.meterGaugeModel}" styleClass="expenseGauge" seriesColors="006dcc, 93b75f, E7E658, cc6666" intervalOuterRadius="90" label="$"/>
+    	
+ </h:form>
+ 	
+	</p:fieldset>
+</ui:define>
+
+<ui:define name="mid">
+	<p:fieldset id="expenseChartContainer">
+		<p:barChart id="basic" value="#{currentMonthChartBean.categoryModel}" legendPosition="ne"
+            title="Current Month Expense" min="0" 
+            rendered = "#{homeBean.renderBarChart == 'YES'}"
+            />
+   	   <p:outputLabel	rendered = "#{homeBean.renderBarChart == 'NO'}"
+     					styleClass="noChartDataMessage">
+     		You have not added any expense record for the current month. Please visit <a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a> page to begin.
+     	</p:outputLabel>			
+     
+     </p:fieldset>
+     
+     
+
+</ui:define>
+
+<ui:define name="bottom">
+	<p:fieldset id="expenseTableContainer">
+  	<p:dataTable var="expenseRecords" value="#{homeBean.userExpensePerCategory}"
+  									styleClass="expenseTable">
+  		<f:facet name="header">Current Month Expense</f:facet>
+  		<p:column>
+			<f:facet name="header">Category</f:facet>
+			<strong>#{expenseRecords.categoryString}</strong>
+		</p:column>
+		<p:column>
+			<f:facet name="header">Amount($)</f:facet>
+			<h:outputText value="#{expenseRecords.expense}"/>
+		</p:column>
+	</p:dataTable> 
+	</p:fieldset>
+</ui:define>
+
+</ui:composition>
+		
+

@@ -1,0 +1,160 @@
+@CHARSET "ISO-8859-1";
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+#container{
+	min-height:100%;
+	position:relative;
+}
+#content {
+   padding:10px;
+   padding-bottom:50px;   /* Height of the footer */
+}
+
+#welcomeMessage {
+	position:absolute;
+	right:10px;
+	top:20px;
+}
+#welcomeMessage ul{
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+#welcomeMessage li{
+	display:inline;
+	font-weight:bold;
+	font-size:small;
+	color:black;
+}
+#header{
+	background-color:#BED6F8;
+	width:100%;
+	height:45px;
+	top:0px;
+	margin-left:0px;
+}
+.mainNav{
+	margin-left:5px;
+	margin-right:auto;
+	width:360px;
+	top:20px;
+	font-size:100%;
+}
+.widget-labels{
+	font-size:medium;
+}
+
+
+#navcontainer ul{
+	position:absolute;
+	padding-left: 0;
+	margin-left: 0;
+	background-color: #527ACC;
+	color: White;
+	float: left;
+	width: auto;
+	font-family: arial, helvetica, sans-serif;
+	top:40px;
+}
+
+#navcontainer ul li { display: inline; }
+
+#navcontainer ul li a{
+	padding: 0.2em 1em;
+	background-color: #527ACC;
+	color: White;
+	text-decoration: none;
+	float: left;
+	border-right: 1px solid #fff;
+}
+
+#navcontainer ul li a:hover{
+	background-color: #7AA3CC;
+	color: #fff;
+}
+#navlist li a#current{
+	background-color: #BED6F8;
+}
+#footer {
+	position: absolute;
+	bottom: 0px;
+	height: 50px;
+	width:100%;
+	background-color:#BED6F8;
+}
+
+/* REGION LOGIN PAGE (login.jsp) */
+
+
+#loginForm{
+	width:30%;height:30%;margin-left:20%;
+	margin-top:70px;
+	float:left;
+}
+#signUpButton{
+	position:absolute;margin-left:20px;
+}
+
+#loginMessage{
+	float:left;
+	margin-left:100px;
+	margin-top:70px;
+}
+#loginMessage p{
+	font-family:Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-weight:bold;
+	font-size:20px;
+}
+
+/* REGION SIGN UP PAGE (registerUser.jsp) */
+#registerForm{
+	margin-left:100px;width:30%;margin-top:150px;height:30%;
+	float:left;
+}
+
+#registerMessage{
+	margin-left:100px;
+	width:40%;margin-top:70px;margin-bottom:auto;
+	float:left;
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-size:120%;
+}
+#gettingStartedText{
+	font-family:Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-weight:bold;
+	font-size:20px;
+}
+.paragraphBreak{
+	width:100%;
+	height:5px;
+	background-color:#006dcc;
+}
+
+/* REGION Forgot Password (forgotPassword.xhtml) */
+.forgotPasswordPanel{
+	width:40%;
+	height:50%;
+	margin-top:120px;
+	margin-left:30%;
+	float:left;
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-size:100%;
+}
+.fpRow{
+	height:20px;	
+}
+#forgotPasswordMessage{
+	float:left;
+	margin-left:100px;
+	margin-top:70px;
+}
+#forgotPasswordMessage p{
+	font-family:Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-weight:bold;
+	font-size:20px;
+}
+	

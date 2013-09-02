@@ -1,0 +1,34 @@
+@CHARSET "ISO-8859-1";
+
+.historyPanel{
+	width:80%;height:auto;position:absolute;
+	top:70px;margin-left:auto;margin-right:auto;
+	
+}
+
+.historyPanel .ui-tabs-nav{
+	height: 100% !Important;
+}
+
+.historyPanel .ui-widget-header{
+	font-size:medium;
+}
+
+.historyPanel .incomeTableFilter{
+	margin-left:5%;
+	margin-top:10px;
+	width:60%
+}
+.historyPanel .historyTables{
+	font-size:15px;	
+	width:90%;
+	margin-top:30px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:20px;
+}
+
+#pdfLink{
+	font-size:15px;
+	float:left;
+}

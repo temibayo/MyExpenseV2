@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Login</title>
+<link rel="stylesheet" type="text/css" href="/MyExpenseVersion2/bootstrap/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="/MyExpenseVersion2/resources/css/commonStyles.css">
+</head>
+<body>
+	<div id="container">
+		<div id="header">
+			
+		</div>
+		<div id=signUpButton">
+				<input class="btn btn-primary" type="button" value="Sign Up">
+		</div>
+		<div id="content">
+			
+			<div id="loginForm">
+			<b>Invalid Username or Password</b> 
+			
+				<form class="form-horizontal" method=post action="j_security_check">
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">Username</label>
+							<div class="controls">
+					  		  <input id ="inputEmail" type="text" name="j_username">
+							</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputPassword">Password</label>
+						<div class="controls">
+							 <input id="inputPassword" type="password" name= "j_password"><br />
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<input class="btn btn-primary" type="submit" value="Login">
+						</div>
+					</div>
+  				</form>
+  			
+			</div>
+		</div>
+		<div id="footer"></div>
+	</div>		
+		
+</body>
+</html>

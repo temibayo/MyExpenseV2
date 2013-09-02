@@ -1,0 +1,18 @@
+@CHARSET "ISO-8859-1";
+.addRecord{
+	width:800px;
+	margin-top:100px;margin-left:160px;
+}
+
+.addRecord .ui-widget-header{
+	font-size:medium;
+}	
+
+.formLabels{
+	font-style:italic;
+	font-weight:bold;
+	font-size:medium;
+}
+.incomeForm td{
+	border:none;
+}

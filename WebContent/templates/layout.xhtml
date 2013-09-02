@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+      
+<h:head>
+	<h:outputStylesheet name="css/commonStyles.css" />
+	<h:outputStylesheet name="css/homepageStyles.css" />
+	<h:outputStylesheet name="css/addRecordStyles.css" />
+	<h:outputStylesheet name="css/historyPageStyles.css" />
+	<h:outputStylesheet name="css/settingsPageStyles.css" />
+	<h:outputStylesheet name="css/analysisPageStyles.css" />
+	<h:outputStylesheet name="css/reportsPageStyles.css" />
+</h:head>
+
+<h:body>
+<div id="container">
+	<div id="header">
+		<div id="welcomeMessage">
+			<ul>
+				<li>Logged in as #{userProfileBean.username}  | </li>
+				<li><a href="/MyExpenseVersion2/security/logout.jsp">Log Out</a></li>
+			</ul>
+		</div>
+	</div>
+	 	 
+	
+	<div id="content">
+		<ui:insert name="menubar">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li id="active"><a href="/MyExpenseVersion2/ui/home.jsf" id="current">Home</a></li>
+					<li><a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a></li>
+					<li><a href="/MyExpenseVersion2/ui/history.jsf">History</a></li>
+					<li><a href="/MyExpenseVersion2/ui/settings.jsf">Settings</a></li>
+					<li><a href="/MyExpenseVersion2/ui/settings.jsf">Analysis</a></li>
+					<li><a href="/MyExpenseVersion2/ui/reports/index.jsf">Reports</a></li>
+				</ul>
+			</div>
+		</ui:insert> 	 
+ 		<ui:insert name="top"> </ui:insert>
+ 		<ui:insert name="mid"> </ui:insert>
+  		<ui:insert name="bottom"> </ui:insert>  
+ 	</div>
+ 	
+ 	<div id="footer"> </div>
+</div> 
+    
+</h:body>
+
+</html>

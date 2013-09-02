@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+
+
+<ui:define name="menubar">
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li><a href="/MyExpenseVersion2/ui/home.jsf">Home</a></li>
+			<li><a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a></li>
+			<li id="active"><a href="/MyExpenseVersion2/ui/history.jsf" id="current">History</a></li>
+			<li><a href="/MyExpenseVersion2/ui/settings.jsf">Settings</a></li>
+			<li><a href="/MyExpenseVersion2/ui/analysis.jsf">Analysis</a></li>
+		</ul>
+	</div>
+</ui:define>
+
+
+
+<ui:define name="top">
+<p:tabView id="tabView" orientation="top" styleClass="historyPanel">
+
+	<p:tab id="incomeTab" title="Income History">
+	<h:form id="form2">
+		
+		 <p:dataTable id="incomeTable" var="incomeRecords" filteredValue="#{incomeHistoryBean.filteredUserIncomeHistory}" editable="true" paginator="true" rows="10" styleClass="historyTables" value="#{incomeHistoryBean.userIncomeHistory}">
+		 	
+       		<p:ajax event="rowEdit" listener="#{incomeHistoryBean.onEdit}"/>  
+        	<p:ajax event="rowEditCancel" listener="#{incomeHistoryBean.onCancel}" /> 
+        	
+        	<p:ajax event="rowToggle" listener="#{incomeHistoryBean.onRowToggle}" />
+        	
+        	<p:column>
+        		<p:rowToggler/>
+        	</p:column>
+        	
+  			<p:column>
+				<f:facet name="header">Date</f:facet>
+				<h:outputText value='#{incomeRecords.date}'/>
+			</p:column>
+			<p:column filterBy="#{incomeRecords.source}" filterMatchMode="contains">
+				<f:facet name="header">Source</f:facet>
+				<h:outputText value='#{incomeRecords.source}'/>
+			</p:column>
+			<p:column filterBy="#{incomeRecords.notes}" filterMatchMode="contains">
+				<f:facet name="header">Notes</f:facet>
+				<h:outputText value='#{incomeRecords.notes}'/>
+			</p:column>
+			<p:column headerText="Amount($)">
+		
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value='#{incomeRecords.amount}'/>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value='#{incomeRecords.amount}' style="width:100%"/>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column>
+				<p:rowEditor /> 
+			</p:column>
+			
+			
+		<p:rowExpansion>  
+            <h:panelGrid id="display" columns="2" cellpadding="4" style="width:50%;" > 
+                              
+  
+                <h:outputText value="Date:" />  
+                <h:outputText id="expDate" value="#{incomeRecords.date}" />  
+  
+                <h:outputText value="Source:" />  
+                <h:outputText id="expSource" value="#{incomeRecords.source}" />  
+  
+                <h:outputText value="Notes" />  
+                <h:outputText value="#{incomeRecords.notes}"/>  
+  
+                <h:outputText value="Amount" />  
+                <h:outputText value="#{incomeRecords.amount}"/>  
+            </h:panelGrid>  
+  
+        </p:rowExpansion> 
+		</p:dataTable> 
+		
+	</h:form>
+	</p:tab>
+	<p:tab id="tab2" title="Expense History" styleClass="historyTables">
+	<h:form>
+		 <p:dataTable var="expenseRecords" filteredValue="#{expenseHistoryBean.filteredUserExpenseHistory}" paginator="true" rows="10" styleClass="historyTables" value="#{expenseHistoryBean.userExpenseHistory}">
+  		<p:column>
+			<f:facet name="header">Date</f:facet>
+			#{expenseRecords.date}
+		</p:column>
+		<p:column filterBy="#{expenseRecords.vendor}" filterMatchMode="contains">
+			<f:facet name="header">Vendor</f:facet>
+			<h:outputText value='#{expenseRecords.vendor}'/>
+		</p:column>
+		<p:column>
+			<f:facet name="header">Description</f:facet>
+			<h:outputText value='#{expenseRecords.description}'/>
+		</p:column>
+		<p:column>
+			<f:facet name="header">Amount($)</f:facet>
+			#{expenseRecords.amount}
+		</p:column>
+	</p:dataTable> 
+	</h:form>
+	</p:tab>
+	
+	<p:tab id="tab3" title="Savings History">
+	<h:form>
+		 <p:dataTable var="savingsRecords" paginator="true" rows="10" styleClass="historyTables" value="#{savingsHistoryBean.userSavingsHistory}">
+   		<p:column>
+			<f:facet name="header">Date</f:facet>
+			#{savingsRecords.date}
+		</p:column>
+		<p:column>
+			<f:facet name="header">Source</f:facet>
+			#{savingsRecords.source}
+		</p:column>
+		<p:column>
+			<f:facet name="header">Notes</f:facet>
+			#{savingsRecords.notes}
+		</p:column>
+		<p:column>
+			<f:facet name="header">Amount($)</f:facet>
+			#{savingsRecords.amount}
+		</p:column>
+	</p:dataTable> 
+	</h:form>
+	</p:tab>
+	
+</p:tabView>
+</ui:define>
+
+</ui:composition>

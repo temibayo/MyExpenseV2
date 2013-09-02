@@ -1,0 +1,156 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+
+
+
+<ui:define name="menubar">
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li><a href="/MyExpenseVersion2/ui/home.jsf">Home</a></li>
+			<li id="active"><a href="/MyExpenseVersion2/ui/addRecord.jsf" id="current">Add Record</a></li>
+			<li><a href="/MyExpenseVersion2/ui/history.jsf">History</a></li>
+			<li><a href="/MyExpenseVersion2/ui/settings.jsf">Settings</a></li>
+		</ul>
+	</div>
+</ui:define>
+
+
+<ui:define name="top">
+
+	<p:accordionPanel style="width:900px;margin-top:100px;margin-left:160px;">
+		<p:tab title="Add Income">  
+		<h:form>
+			<p:messages id="incomeNotifications"/>
+			<h:panelGrid id="panel" columns="3" width="70%">
+			
+					<p:outputLabel for="date" value="Date:" styleClass="formLabels"/>
+					<p:calendar id="date" value="#{addIncomeRecordBean.date}"
+								pattern="dd MMM, yyyy"
+								required="true"
+								requiredMessage="date is a required field">
+					</p:calendar>
+					<p:message id="dateRequired" for="date" />
+					
+					<p:outputLabel for="source" value="Source:" styleClass="formLabels"/>
+					<p:inputText id="source" value="#{addIncomeRecordBean.source}"/>
+					<p:outputLabel/>
+					
+					<p:outputLabel for="notes" value="Notes:" styleClass="formLabels"/>
+					<p:inputText id="notes" value="#{addIncomeRecordBean.notes}"/>
+					<p:outputLabel/>
+									
+					<p:outputLabel for="amount" value="Amount:" styleClass="formLabels"/>
+ 					<p:inputText id="amount" value="#{addIncomeRecordBean.amount}"
+ 								 required="true"
+ 								 requiredMessage="Amount is a required field">
+ 					</p:inputText>
+ 					<p:message id="amountRequired" for="amount"/>
+ 					
+ 					<p:outputLabel/>
+ 					<p:outputLabel/>
+ 					<p:commandButton value="Add Income Record" action="#{addIncomeRecordBean.addUserIncomeRecord}" 
+ 									 update="dateRequired amountRequired incomeNotifications"/>
+ 					
+ 		 	</h:panelGrid>
+ 		 </h:form>
+		</p:tab>
+		
+		
+		<p:tab title="Add Expense">  
+		<h:form>
+			<p:messages id="expenseNotifications"/>
+			<h:panelGrid id="panel" columns="3" width="70%">
+				<p:outputLabel for="jDate" value="Date:" styleClass="formLabels"/>
+				<p:calendar id="jDate" value="#{addExpenseRecordBean.date}"
+							required="true"
+							pattern="dd MMM, yyyy"
+							requiredMessage="Date is a required field">
+				</p:calendar>
+				<p:message id="dateRequired" for="jDate"/>
+		
+		 
+				<p:outputLabel for="category" value="Category:" styleClass="formLabels"/>
+				<p:selectOneMenu id="category" value="#{addExpenseRecordBean.category}"
+								 required="true"
+								 requiredMessage="Please select an expense category">
+      			    <f:selectItem itemLabel="Select One" itemValue="" />
+      	  	        <f:selectItem itemLabel="Food" itemValue="Food" />
+     		        <f:selectItem itemLabel="Rent" itemValue="Rent" />
+    	            <f:selectItem itemLabel="Gas" itemValue="Gas" />
+    		        <f:selectItem itemLabel="Transport" itemValue="Transport" />
+   		            <f:selectItem itemLabel="Car Note" itemValue="Car Note" />
+           			<f:selectItem itemLabel="Phone" itemValue="Phone" />
+           			<f:selectItem itemLabel="Misc" itemValue="Misc" />
+          			<f:selectItem itemLabel="Entertainment" itemValue="Entertainment" />
+          			<f:selectItem itemLabel="Electricity" itemValue="Electricity" />
+            		<f:selectItem itemLabel="Internet" itemValue="Internet" />
+      		    </p:selectOneMenu>
+        		<p:message id="categoryRequired" for="category"/>
+		
+				<p:outputLabel for="vendor" value="Vendor:" styleClass="formLabels"/>
+				<p:inputText id="vendor" value="#{addExpenseRecordBean.vendor}"/>
+				<p:outputLabel/>
+		
+				<p:outputLabel for="description" value="Description:" styleClass="formLabels"/>
+				<p:inputText id="description" value="#{addExpenseRecordBean.description}"/>
+				<p:outputLabel/>
+		
+				<p:outputLabel for="amount" value="Amount:" styleClass="formLabels"/>
+				<p:inputText id="amount" value="#{addExpenseRecordBean.amount}"
+							 required="true"
+							 requireMessage="Please enter an amount">
+				</p:inputText>
+				<p:message id="amountRequired" for="amount"/>
+				
+				
+				<p:outputLabel />
+				<p:outputLabel />
+				<p:commandButton value="Add Expense Record" action="#{addExpenseRecordBean.addUserExpenseRecord}"
+								 update="dateRequired categoryRequired amountRequired expenseNotifications"/>
+ 		</h:panelGrid>
+		</h:form>
+		</p:tab>
+		
+		<p:tab title="Add Savings">  
+		<h:form>
+			<p:messages id="savingsNotifications"/>
+			<h:panelGrid id="panel" columns="3" width="70%">
+			
+					<p:outputLabel for="date" value="Date:" styleClass="formLabels"/>
+					<p:calendar id="date" value="#{addSavingsRecordBean.date}"
+								required="true"
+								pattern="dd MMM, yyyy"
+								requiredMessage="Please select a date">
+					</p:calendar>
+					<p:message id="dateRequired" for="date"/>
+					
+					<p:outputLabel for="source" value="Source:" styleClass="formLabels"/>
+					<p:inputText id="source" value="#{addSavingsRecordBean.source}"/>
+					<p:outputLabel/>
+				
+					<p:outputLabel for="notes" value="Notes:" styleClass="formLabels"/>
+					<p:inputText id="notes" value="#{addSavingsRecordBean.notes}"/>
+					<p:outputLabel/>
+				
+					<p:outputLabel for="amount" value="Amount:" styleClass="formLabels"/>
+					<p:inputText id="amount" value="#{addSavingsRecordBean.amount}"
+								 required="true"
+								 requiredMessage="Please enter an amount">
+					</p:inputText>
+					<p:message id="amountRequired" for="amount"/>
+					
+					<p:outputLabel/>
+					<p:outputLabel/>
+  				    <p:commandButton value="Add Savings Record" action="#{addSavingsRecordBean.addUserSavingsRecord}"
+  				    				 update="dateRequired amountRequired savingsNotifications"/>
+				
+			</h:panelGrid>
+		</h:form>
+		</p:tab>
+	</p:accordionPanel>
+</ui:define>
+</ui:composition>

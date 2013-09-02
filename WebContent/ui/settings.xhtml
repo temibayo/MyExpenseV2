@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+
+
+<ui:define name="menubar">
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li><a href="/MyExpenseVersion2/ui/home.jsf">Home</a></li>
+			<li><a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a></li>
+			<li><a href="/MyExpenseVersion2/ui/history.jsf">History</a></li>
+			<li id="active"><a href="/MyExpenseVersion2/ui/settings.jsf" id="current">Settings</a></li>
+		</ul>
+	</div>
+</ui:define>
+
+<ui:define name="top">
+	<p:panel header="ACCOUNT INFORMATION" styleClass="userprofilePanel">
+	<h:form>
+		<p>Update account information</p>
+		<p:fieldset style="width:auto;position:center;">
+			<div id="userInfoFirstPanel">
+			<h:panelGrid columns="4" cellspacing="15" style="width:410px">
+			
+				<p:outputLabel value="Username:"/>
+				<p:outputLabel>#{settingsBean.username}</p:outputLabel>
+				<p:outputLabel/>
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Email:"/>
+				<p:outputLabel>#{settingsBean.email}</p:outputLabel>
+				<p:inputText/>
+				<p:commandButton value="UPDATE"/>
+				
+				<p:outputLabel value="First Name"/>
+				<p:outputLabel id="firstName" value="#{settingsBean.firstName}"/>
+				<p:inputText id="firstNameUpdate" value="#{settingsBean.firstNameUpdate}"/>
+				<p:commandButton value="Update" action="#{settingsBean.updateFirstName}">
+					<f:ajax execute="firstNameUpdate" render="firstName"/>
+				</p:commandButton>
+				
+				<p:outputLabel value="Last Name"/>
+				<p:outputLabel>#{settingsBean.lastName}</p:outputLabel>
+				<p:inputText/>
+				<p:commandButton value="Update"/>
+			</h:panelGrid>
+			</div>
+			
+			<div id="panelDivide"></div>
+			
+			<div id="userInfoSecondPanel">
+				<h:panelGrid columns="2" cellspacing="15" style="width:400px">
+					<p:outputLabel value="Current Password"/>
+					<p:inputText/>
+					
+					<p:outputLabel value="New Password"/>
+					<p:inputText/>
+					
+					<p:outputLabel value="Confirm New Password"/>
+					<p:inputText/>
+					
+					<p:outputLabel/>
+					<p:commandButton value="Change Password"/>
+				</h:panelGrid>
+			</div>
+			
+			
+		</p:fieldset>
+	</h:form>
+	</p:panel>
+	<br />
+	<p:panel header="BUDGET" styleClass="budgetPanel">
+		<h:form>
+			<p> Set monthly budget for your expense categories</p>
+			<p:fieldset>
+			
+				<h:panelGrid columns="2" cellspacing="5" style="width:100%">
+					
+						<p:outputLabel for="budget" value="Monthly Expense Budget:"/>
+						<p:outputLabel value="35"/>
+					
+						<p:inputText id="budget"></p:inputText>
+						<p:commandButton value="Set Budget"></p:commandButton>
+					
+				</h:panelGrid>
+				
+			</p:fieldset>
+		</h:form>
+	</p:panel>
+	<br />
+
+
+</ui:define>
+
+
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

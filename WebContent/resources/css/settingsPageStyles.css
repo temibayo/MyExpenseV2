@@ -1,0 +1,28 @@
+@CHARSET "ISO-8859-1";
+.userprofilePanel{
+	width:927px;height:auto;
+	margin-top:100px;margin-left:160px;
+}
+
+.budgetPanel{
+	width:927px;height:auto;
+	margin-top:50px;margin-left:160px;
+	margin-bottom:20px;
+}
+
+#userInfoFirstPanel{
+	float:left;
+}
+
+#userInfoSecondPanel{
+	float:left;
+	margin-top:0px;
+	margin-left:15px;
+}
+
+#panelDivide{
+	width:3px;
+	height:180px;
+	background-color:#eee;
+	float:left;
+}

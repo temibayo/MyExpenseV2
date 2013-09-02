@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+
+
+<ui:define name="menubar">
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li><a href="/MyExpenseVersion2/ui/home.jsf">Home</a></li>
+			<li><a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a></li>
+			<li><a href="/MyExpenseVersion2/ui/history.jsf">History</a></li>
+			<li><a href="/MyExpenseVersion2/ui/settings.jsf">Settings</a></li>
+			<li id="active"><a href="/MyExpenseVersion2/ui/reports/index.jsf" id="current">Reports</a></li>
+		</ul>
+	</div>
+</ui:define>
+
+<ui:define name="top">
+	<ui:include src="/ui/reports/income.xhtml"></ui:include>
+	<ui:include src="/ui/reports/expense.xhtml" />
+</ui:define>
+
+
+</ui:composition>

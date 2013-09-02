@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>MyExpenseVersion2</display-name>
+  
+  <welcome-file-list>
+    <welcome-file>/ui/home.jsf</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+    <servlet-name>Jersey REST Service</servlet-name>
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>restImpl</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Jersey REST Service</servlet-name>
+    <url-pattern>/restImpl/*</url-pattern>
+  </servlet-mapping>
+  
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/security/login.jsp</form-login-page>
+      <form-error-page>/security/error.html</form-error-page>
+    </form-login-config>
+  </login-config>
+  <security-constraint>
+    <display-name>URLsConstraintMechanism</display-name>
+    <web-resource-collection>
+      <web-resource-name>clientURL</web-resource-name>
+      <url-pattern>/ui/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>PUT</http-method>
+      <http-method>POST</http-method>
+      <http-method>DELETE</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-role>
+    <description>The Only Secure Role</description>
+    <role-name>user</role-name>
+  </security-role>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.jsf</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>javax.faces.PROJECT_STAGE</param-name>
+    <param-value>Development</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>bluesky</param-value>
+  </context-param>
+  <servlet>
+    <description></description>
+    <display-name>RegisterUserHandler</display-name>
+    <servlet-name>RegisterUserHandler</servlet-name>
+    <servlet-class>controller.RegisterUserHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegisterUserHandler</servlet-name>
+    <url-pattern>/RegisterUserHandler</url-pattern>
+  </servlet-mapping>
+    <servlet>
+   <description></description>
+    <display-name>RegisterUserHandler2</display-name>
+    <servlet-name>RegisterUserHandler2</servlet-name>
+    <servlet-class>controller.v2.RegisterUserHandler</servlet-class>
+  </servlet>
+</web-app>

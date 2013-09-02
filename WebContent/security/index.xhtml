@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<title>index</title>
+</h:head>
+<h:body>
+	<h1>Manage your finances</h1>
+	<!-- Other HTML tags and non-input JSF elements here -->
+
+	
+  <!-- This means bean named "yourBean" must have getYourProperty and setYourProperty -->
+   <fieldset>
+  	<legend>Already have an account?</legend>
+		<a href="http://localhost/MyExpenseVersion2/ui/home.jsf">Login</a>
+  	</fieldset>
+	
+	<br />
+	<br />
+	<br />
+	
+	<h:form>
+  		<fieldset>
+  			<legend>Create New Account</legend>
+  			<label>Username</label>
+ 			<h:inputText value="#{registerUserBean.username}"/>
+ 			<label>Password</label>
+ 			<h:inputText value="#{registerUserBean.password}"/>
+ 			<label>Re-type Password</label>
+ 			<h:inputText/>  
+ 			<label>First Name</label>
+ 			<h:inputText value="#{registerUserBean.firstName}"/>
+ 			<label>Last Name</label>
+ 			<h:inputText value="#{registerUserBean.lastName}"/>
+ 			<label>Email</label>
+ 			<h:inputText value="#{registerUserBean.email}"/>
+  			<h:commandButton value="Sign Up" action="#{registerUserBean.createUser}"/>
+  		</fieldset>
+	</h:form>
+	<!-- Other HTML tags and non-input JSF elements here -->
+</h:body>
+</html>

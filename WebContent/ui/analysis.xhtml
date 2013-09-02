@@ -1,0 +1,156 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:p="http://primefaces.org/ui" 
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/templates/layout.xhtml">
+
+
+
+<ui:define name="menubar">
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li><a href="/MyExpenseVersion2/ui/home.jsf">Home</a></li>
+			<li><a href="/MyExpenseVersion2/ui/addRecord.jsf">Add Record</a></li>
+			<li><a href="/MyExpenseVersion2/ui/history.jsf">History</a></li>
+			<li><a href="/MyExpenseVersion2/ui/settings.jsf">Settings</a></li>
+			<li id="active"><a href="/MyExpenseVersion2/ui/analysis.jsf" id="current">Analysis</a></li>
+		</ul>
+	</div>
+</ui:define>
+
+<ui:define name="top">
+<p:tabView id="analysisContainer" styleClass="tabContainer">
+	<p:tab id="recordsTab" title="Records By Year">
+		<h:form>
+
+			<fieldset id="selectMenu">
+				<h:panelGrid columns="2" cellspacing="10" styleClass="innerMenu">
+		
+				<p:outputLabel value="Select Year"></p:outputLabel>
+				 <p:selectOneMenu id="year" value="#{analysisBean.year}">  
+           		  <f:selectItem itemLabel="2013" itemValue="2013" />  
+          		  <f:selectItem itemLabel="2012" itemValue="2012" />  
+          		  <f:selectItem itemLabel="2011" itemValue="2011" />  
+       			 </p:selectOneMenu> 
+       		
+		
+			<p:outputLabel value="Select Category"></p:outputLabel>
+			<p:selectOneMenu value="#{analysisBean.recordType}">  
+          		  <f:selectItem itemLabel="Expense" itemValue="Expense" />  
+          		  <f:selectItem itemLabel="Income" itemValue="Income" />  
+          		  <f:selectItem itemLabel="Savings" itemValue="Savings" />  
+       		 </p:selectOneMenu> 
+       			 
+       		 <p:outputLabel/>
+       		 <p:commandButton value="View" actionListener="#{analysisBean.refreshChartData}" update="myBarChart"/>
+       		 		
+ 
+			</h:panelGrid>	
+		</fieldset>
+
+
+
+	<div id="analysisBar">
+	<p:barChart id="myBarChart" value="#{analysisBean.categoryModel}" legendPosition="ne"
+            title="Total by Month" min="0"/>
+    </div>
+</h:form>
+	</p:tab>
+	<p:tab id="compareTab" title="Compare Records By Year">
+		<h:form>
+			
+			<fieldset id="selectMenu">
+				<h:panelGrid columns="7" cellspacing="10" styleClass="innerMenu">
+		
+				<p:outputLabel value="Select Year"></p:outputLabel>
+				 <p:selectOneMenu id="year" value="#{analysisCompareRecordsBean.year}">  
+          		  <f:selectItem itemLabel="2013" itemValue="2013" />  
+          		  <f:selectItem itemLabel="2012" itemValue="2012" />  
+          		  <f:selectItem itemLabel="2011" itemValue="2011" />  
+       			 </p:selectOneMenu>
+       			 <p:outputLabel/>
+       			 <p:outputLabel/>
+       			 <p:outputLabel/>
+       			 <p:outputLabel/>
+       			 <p:outputLabel/> 
+       		
+		
+			<p:outputLabel value="Select Category"></p:outputLabel>
+			<p:outputLabel value="Expense"/>
+			<p:selectBooleanCheckbox value="#{analysisCompareRecordsBean.isExpenseSelected}"/> 
+			<p:outputLabel value="Income"/>
+			<p:selectBooleanCheckbox value="#{analysisCompareRecordsBean.isIncomeSelected}"/> 
+			<p:outputLabel value="Savings"/>
+			<p:selectBooleanCheckbox value="#{analysisCompareRecordsBean.isSavingsSelected}"/> 
+       			 
+       		 <p:outputLabel/>
+       		 <p:commandButton value="View" actionListener="#{analysisCompareRecordsBean.refreshChartData}" update="allRecordsChart"/>
+       		 <p:outputLabel/>
+       		 <p:outputLabel/>
+       		 <p:outputLabel/>
+       		 <p:outputLabel/>
+       		 <p:outputLabel/>
+       		 		
+ 			</h:panelGrid>	
+		</fieldset>
+		
+		<div id="analysisBar">
+	<p:barChart id="allRecordsChart" value="#{analysisCompareRecordsBean.categoryModel}" legendPosition="ne"
+            title="Total by Month" min="0"/>
+    </div>
+    
+    </h:form>
+	</p:tab>
+	
+	<p:tab id="expenseTab" title="Expense By Category">
+		<h:form>
+
+			<fieldset id="selectMenu">
+				<h:panelGrid columns="2" cellspacing="10" styleClass="innerMenu">
+		
+				<p:outputLabel value="Select Year"></p:outputLabel>
+				 <p:selectOneMenu id="year" value="#{analysisExpenseRecordsBean.year}">  
+          		  <f:selectItem itemLabel="2013" itemValue="2013" />  
+          		  <f:selectItem itemLabel="2012" itemValue="2012" />  
+          		  <f:selectItem itemLabel="2011" itemValue="2011" />  
+       			 </p:selectOneMenu> 
+       		
+		
+			<p:outputLabel value="Select Category"></p:outputLabel>
+			<p:selectOneMenu value="#{analysisExpenseRecordsBean.month}">  
+           		  <f:selectItem itemLabel="January" itemValue="1" />  
+          		  <f:selectItem itemLabel="February" itemValue="2" />  
+          		  <f:selectItem itemLabel="March" itemValue="3" />  
+          		  <f:selectItem itemLabel="April" itemValue="4" />  
+          		  <f:selectItem itemLabel="May" itemValue="5" />
+          		  <f:selectItem itemLabel="June" itemValue="6" />
+          		  <f:selectItem itemLabel="July" itemValue="7" />
+          		  <f:selectItem itemLabel="August" itemValue="8" />
+          		  <f:selectItem itemLabel="September" itemValue="9" />
+          		  <f:selectItem itemLabel="October" itemValue="10" />
+          		  <f:selectItem itemLabel="November" itemValue="11" />
+          		  <f:selectItem itemLabel="December" itemValue="12" />
+       		 </p:selectOneMenu> 
+       			 
+       		 <p:outputLabel/>
+       		 <p:commandButton value="View" actionListener="#{analysisExpenseRecordsBean.refreshChartData}" update="expenseRecordsChart" />
+       		 		
+ 
+			</h:panelGrid>	
+		</fieldset>
+
+
+
+	<div id="analysisBar">
+		<p:barChart id="expenseRecordsChart" value="#{analysisExpenseRecordsBean.categoryModel}" legendPosition="ne"
+            title="Total by Month" min="0"/>
+    </div>
+		</h:form>
+	</p:tab>
+
+</p:tabView>
+</ui:define>
+
+
+</ui:composition>
