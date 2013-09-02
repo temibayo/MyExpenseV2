@@ -43,7 +43,7 @@ public class UserProfileAccessor {
 	}
 	
 	public DataAccessResult createUser(UserProfile up){
-
+		
 		doesRecordExist = "select * from UserProfile  where username = '"+up.getUsername()+
 						  "' or email = '"+up.getEmail()+"';";
 		dbInsert = "Insert into UserProfile(Username, Password, Email, FirstName, LastName) "
@@ -52,12 +52,14 @@ public class UserProfileAccessor {
 		insertRoles = "Insert into user_roles(Username, Rolename) Values"+
 					  "('"+up.getUsername()+"', 'user');";
 		DataAccessResult dar = new DataAccessResult();
+	
 		try{
 			DbConnect conn = new DbConnect();
 			Connection connection = conn.establishConnection();
 			statement = connection.createStatement();
 			rs = statement.executeQuery(doesRecordExist);
 			if(rs.next()){
+				System.out.println(rs.getString("Email"));
 				dar.setStatus("Failed");
 			}
 			else{
@@ -70,9 +72,10 @@ public class UserProfileAccessor {
 		catch (Exception e){
 			e.printStackTrace();
 		}
-		
 		return dar;
 	}
+	
+	
 	
 	public boolean isExistingEmail(String email){		
 		query = "Select * from UserProfile where Email = '"+email+"';";

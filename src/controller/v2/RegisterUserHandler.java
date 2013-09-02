@@ -26,7 +26,7 @@ public class RegisterUserHandler extends HttpServlet {
 	
 	private final String URI = "http://localhost/MyExpenseVersion2/restImpl/userProfileWebServiceImpl";
 	private final String PATH = "registerUser";
-	
+	private final int HTTP_STATUS_OK = 200;
 
 
 	/**

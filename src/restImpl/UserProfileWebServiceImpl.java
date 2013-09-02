@@ -33,14 +33,13 @@ public class UserProfileWebServiceImpl implements UserProfileWebService {
 		UserProfile up = new UserProfile();
 		up.setEmail(email);
 		up.setFirstName(firstName);
-		up.setFirstName(lastName);
+		up.setLastName(lastName);
 		up.setPassword(password);
-		up.setPassword(username);
+		up.setUsername(username);
 		
 
 		UserProfileAccessor upa = new UserProfileAccessor();
 		DataAccessResult dar = new DataAccessResult();
-		
 		dar = upa.createUser(up);
 		if(dar.getStatus().equals("Success")){
 			wsResponse.setStatus("SUCCESS");
@@ -48,10 +47,10 @@ public class UserProfileWebServiceImpl implements UserProfileWebService {
 		else{
 			wsResponse.setStatus("FAIL");
 		}
-		
-		
 		return wsResponse;
 		
 	}
+	
+
 
 }
