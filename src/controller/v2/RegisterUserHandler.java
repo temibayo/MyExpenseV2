@@ -14,8 +14,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-import dataAccessor.DataAccessResult;
-import dataAccessor.UserProfileAccessor;
+
 import model.UserProfile;
 /**
  * This is version 2 of the RegisterUserHandler servlet in the controller package
@@ -26,6 +25,8 @@ public class RegisterUserHandler extends HttpServlet {
 	
 	private final String URI = "http://localhost/MyExpenseVersion2/restImpl/userProfileWebServiceImpl";
 	private final String PATH = "registerUser";
+	private final String REGISTRATION_PAGE = "/MyExpenseVersion2/security/registerUserV2.jsp";
+	private final String HOME_PAGE = "/MyExpenseVersion2/ui/home.jsf";
 	private final int HTTP_STATUS_OK = 200;
 
 
@@ -51,9 +52,13 @@ public class RegisterUserHandler extends HttpServlet {
 				WebResource webResource = client.resource(URI);
 				
 				//Make the WebService call
-				ClientResponse clientResponse = webResource.path(PATH).path(up.getUsername()).path(up.getPassword()).path(up.getFirstName()).path(up.getLastName()).path(up.getEmail()).accept("application/json").post(ClientResponse.class);
+				ClientResponse clientResponse = webResource.path(PATH).path(up.getUsername())
+													.path(up.getPassword()).path(up.getFirstName())
+													.path(up.getLastName())
+													.path(up.getEmail()).accept("application/json")
+													.post(ClientResponse.class);
 				
-				if (clientResponse.getStatus() != 200) {
+				if(clientResponse.getStatus() != HTTP_STATUS_OK) {
 					throw new RuntimeException("Failed : HTTP error code : "
 							+ clientResponse.getStatus());
 				}
@@ -68,14 +73,14 @@ public class RegisterUserHandler extends HttpServlet {
 				e.printStackTrace();
 			}
 			if(upWSResponse.getStatus().equals("SUCCESS")){
-				response.sendRedirect("/MyExpenseVersion2/ui/home.jsf");
+				response.sendRedirect(HOME_PAGE);
 			}
 			else {
-				response.sendRedirect("/MyExpenseVersion2/security/registerUserV2.jsp");
+				response.sendRedirect(REGISTRATION_PAGE);
 			}
 		}
 		else {
-			response.sendRedirect("/MyExpenseVersion2/security/registerUserV2.jsp");
+			response.sendRedirect(REGISTRATION_PAGE);
 		}
 	}
 	
