@@ -7,7 +7,9 @@ import restImpl.serviceResponse.UserIncomeWSResponse;
 
 public interface UserIncomeWebService {
 	
-	public UserIncomeWSResponse getLastMonthTotalIncome(LastMonthSummary summary, int id);
+	public UserIncomeWSResponse getLastMonthTotalIncome(int userProfileId,
+														int month,
+														int year);
 	
 	public UserIncomeWSResponse getCurrentMonthTotalIncome(CurrentMonthSummary summary, 
 																int id);

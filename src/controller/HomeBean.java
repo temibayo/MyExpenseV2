@@ -11,7 +11,15 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.primefaces.model.chart.MeterGaugeChartModel;
+
+import restImpl.serviceResponse.UserIncomeWSResponse;
+import restImpl.serviceResponse.UserProfileWSResponse;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 import utils.DateUtil;
 
@@ -40,6 +48,10 @@ public class HomeBean{
 	private BigDecimal expense;
 	
 	private int userProfileID;
+	
+	private final String INCOME_WS_URI = 
+						"http://localhost/MyExpenseVersion2/restImpl/incomeWebService";
+	private final String INCOME_WS_PATH = "/lastMonthTotalIncome";
 	
 	@ManagedProperty(value="#{userProfileBean}")
 	private UserProfileBean upBean;
@@ -72,6 +84,43 @@ public class HomeBean{
 	@PostConstruct 
 	public void init(){
 		userProfileID = upBean.getUserID();
+		UserIncomeWSResponse wsResponse = new UserIncomeWSResponse();
+		String idAsString = Integer.toString(userProfileID);
+		
+		DateUtil date = new DateUtil();
+		String month = Integer.toString(date.getLastMonth());
+		String year = Integer.toString(date.getLastMonthYear());
+		
+		try {
+			 
+			Client client = Client.create();
+	 
+			WebResource webResource = client
+			   .resource(INCOME_WS_URI);
+	 
+			ClientResponse response = webResource.path(INCOME_WS_PATH).
+											queryParam("month", month).
+											queryParam("year", year).
+											queryParam("userID", idAsString).
+											accept("application/json").get(ClientResponse.class);
+	 
+			if (response.getStatus() != 200) {
+			   throw new RuntimeException("Failed : HTTP error code : "
+				+ response.getStatus());
+			}
+	 
+			String output = response.getEntity(String.class);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			wsResponse = mapper.readValue(output, UserIncomeWSResponse.class);
+			System.out.println("Output from Server .... \n");
+			System.out.println(wsResponse.getLastMonthSummary().getIncome());
+	 
+		  } catch (Exception e) {
+	 
+			e.printStackTrace();
+	 
+		  }
 		
 		UserIncomeRecordAccessor uirAccessor = new UserIncomeRecordAccessor();
 		UserExpenseRecordAccessor uerAccessor = new UserExpenseRecordAccessor();
