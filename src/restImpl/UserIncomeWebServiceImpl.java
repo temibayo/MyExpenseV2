@@ -21,9 +21,9 @@ public class UserIncomeWebServiceImpl implements UserIncomeWebService {
 	@GET
 	@Path("/lastMonthTotalIncome")
 	@Produces(MediaType.APPLICATION_JSON)
-	public UserIncomeWSResponse getLastMonthTotalIncome(@QueryParam("userID") int userProfileId,
-														@QueryParam("month") int month,
-														@QueryParam("year") int year) {
+	public UserIncomeWSResponse getLastMonthTotalIncome(@QueryParam("userID") final int userProfileId,
+														@QueryParam("month") final int month,
+														@QueryParam("year") final int year) {
 		UserIncomeWSResponse response = new UserIncomeWSResponse();
 		LastMonthSummary summary = new LastMonthSummary();
 		UserIncomeRecordAccessor accessor = new UserIncomeRecordAccessor();
@@ -36,17 +36,44 @@ public class UserIncomeWebServiceImpl implements UserIncomeWebService {
 		
 		return response;
 	}
-
-	public UserIncomeWSResponse getCurrentMonthTotalIncome(CurrentMonthSummary summary,
-															int id) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	@GET
+	@Path("/currentMonthTotalIncome")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserIncomeWSResponse getCurrentMonthTotalIncome(@QueryParam("userID") final int userProfileId,
+														   @QueryParam("month") final int month,
+														   @QueryParam("year") final int year) {
+		
+		UserIncomeWSResponse response = new UserIncomeWSResponse();
+		CurrentMonthSummary summary = new CurrentMonthSummary();
+		UserIncomeRecordAccessor accessor = new UserIncomeRecordAccessor();
+		
+		summary.setMonth(month);
+		summary.setYear(year);
+		
+		accessor.getCurrentMonthTotalIncome(summary, userProfileId);
+		response.setCurrentMonthSummary(summary);
+		
+		
+		return response;
 	}
 
-	public UserIncomeWSResponse getCurrentYearTotalIncome(
-			CurrentYearSummary summary, int id) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Path("/currentYearTotalIncome")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserIncomeWSResponse getCurrentYearTotalIncome(@QueryParam("userID") final int userProfileId, 
+														  @QueryParam("year") final int year) {
+		UserIncomeWSResponse response = new UserIncomeWSResponse();
+		CurrentYearSummary summary = new CurrentYearSummary();
+		UserIncomeRecordAccessor accessor = new UserIncomeRecordAccessor();
+		
+		summary.setYear(year);
+		
+		//Get the Total income for the year  and store it in the summary
+		accessor.getCurrentYearTotalIncome(summary, userProfileId);
+		
+		response.setCurrentYearSummary(summary);
+		return response;
 	}
 
 }

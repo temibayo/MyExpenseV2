@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,7 +11,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.ws.rs.core.MultivaluedMap;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 
@@ -20,8 +24,10 @@ import restImpl.serviceResponse.UserProfileWSResponse;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import utils.DateUtil;
+import utils.WSClientUtil;
 
 import dataAccessor.DataAccessResult;
 import dataAccessor.UserExpenseRecordAccessor;
@@ -51,7 +57,9 @@ public class HomeBean{
 	
 	private final String INCOME_WS_URI = 
 						"http://localhost/MyExpenseVersion2/restImpl/incomeWebService";
-	private final String INCOME_WS_PATH = "/lastMonthTotalIncome";
+	private final String INCOME_WS_PATH = "lastMonthTotalIncome";
+	private final String CURRENT_MONTH_PATH = "currentMonthTotalIncome";
+	private final String CURRENT_YEAR_PATH = "currentYearTotalIncome";
 	
 	@ManagedProperty(value="#{userProfileBean}")
 	private UserProfileBean upBean;
@@ -84,58 +92,84 @@ public class HomeBean{
 	@PostConstruct 
 	public void init(){
 		userProfileID = upBean.getUserID();
+		String userIdAsString = Integer.toString(userProfileID);
+		
 		UserIncomeWSResponse wsResponse = new UserIncomeWSResponse();
-		String idAsString = Integer.toString(userProfileID);
+		UserIncomeWSResponse currentMonthIncome = new UserIncomeWSResponse();
+		UserIncomeWSResponse currentYearIncome = new UserIncomeWSResponse();
+		ObjectMapper mapper = new ObjectMapper();
+				
+		DateUtil dateUtil = new DateUtil();  
+		String lastMonthDate = Integer.toString(dateUtil.getLastMonth());
+		String lastMonthYearDate = Integer.toString(dateUtil.getLastMonthYear());
+		String currentMonthDate = Integer.toString(dateUtil.getCurrentMonth());
+		String currentYearDate = Integer.toString(dateUtil.getCurrentYear());
 		
-		DateUtil date = new DateUtil();
-		String month = Integer.toString(date.getLastMonth());
-		String year = Integer.toString(date.getLastMonthYear());
+		WSClientUtil clientUtil = new WSClientUtil();		
+		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		
-		try {
-			 
-			Client client = Client.create();
-	 
-			WebResource webResource = client
-			   .resource(INCOME_WS_URI);
-	 
-			ClientResponse response = webResource.path(INCOME_WS_PATH).
-											queryParam("month", month).
-											queryParam("year", year).
-											queryParam("userID", idAsString).
-											accept("application/json").get(ClientResponse.class);
-	 
-			if (response.getStatus() != 200) {
-			   throw new RuntimeException("Failed : HTTP error code : "
-				+ response.getStatus());
-			}
-	 
-			String output = response.getEntity(String.class);
-			
-			ObjectMapper mapper = new ObjectMapper();
-			wsResponse = mapper.readValue(output, UserIncomeWSResponse.class);
-			System.out.println("Output from Server .... \n");
-			System.out.println(wsResponse.getLastMonthSummary().getIncome());
-	 
-		  } catch (Exception e) {
-	 
+		queryParams.add("month", lastMonthDate);
+		queryParams.add("year", lastMonthYearDate);
+		queryParams.add("userID", userIdAsString);
+		String totalIncomeResponse = clientUtil.getWSResponse(queryParams, 
+													INCOME_WS_URI, INCOME_WS_PATH);
+		
+		queryParams.clear();
+		queryParams.add("month", currentMonthDate);
+		queryParams.add("year", currentYearDate);
+		queryParams.add("userID", userIdAsString);
+		String currentMonthIncomeResponse = clientUtil.getWSResponse(queryParams, 
+													INCOME_WS_URI, CURRENT_MONTH_PATH);
+		
+		queryParams.clear();
+		queryParams.add("year", Integer.toString(dateUtil.getCurrentYear()));
+		queryParams.add("userID", Integer.toString(userProfileID));
+		String currentYearIncomeResponse = clientUtil.getWSResponse(queryParams,
+													INCOME_WS_URI, CURRENT_YEAR_PATH);
+		
+		
+		try 
+		{
+			wsResponse = mapper.readValue(totalIncomeResponse, UserIncomeWSResponse.class);			
+			currentMonthIncome = mapper.readValue(currentMonthIncomeResponse, UserIncomeWSResponse.class);			
+			currentYearIncome = mapper.readValue(currentYearIncomeResponse, UserIncomeWSResponse.class);
+
+		} catch (JsonParseException e) {
 			e.printStackTrace();
-	 
-		  }
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		lastMonthSummary.setIncome(wsResponse.getLastMonthSummary().getIncome());
+		currentMonthSummary.setIncome(currentMonthIncome.getCurrentMonthSummary().getIncome());
+		currentYearSummary.setIncome(currentYearIncome.getCurrentYearSummary().getIncome());
+		
+
+		  
+	
+		
+		
+		
+		
+		
+		
 		
 		UserIncomeRecordAccessor uirAccessor = new UserIncomeRecordAccessor();
 		UserExpenseRecordAccessor uerAccessor = new UserExpenseRecordAccessor();
 		UserSavingsRecordAccessor usrAccessor = new UserSavingsRecordAccessor();
 		
-		DataAccessResult dar = uirAccessor.getLastMonthTotalIncome(lastMonthSummary, userProfileID);
-		dar = uerAccessor.getLastMonthTotalExpense(lastMonthSummary, userProfileID);
+	//	DataAccessResult dar = uirAccessor.getLastMonthTotalIncome(lastMonthSummary, userProfileID);
+		DataAccessResult dar = uerAccessor.getLastMonthTotalExpense(lastMonthSummary, userProfileID);
 		usrAccessor.getLastMonthTotalSavings(lastMonthSummary, userProfileID);
 		
 		uerAccessor.getCurrentMonthTotalExpense(currentMonthSummary, userProfileID);
-		uirAccessor.getCurrentMonthTotalIncome(currentMonthSummary, userProfileID);
+	//	uirAccessor.getCurrentMonthTotalIncome(currentMonthSummary, userProfileID);
 		usrAccessor.getCurrentMonthTotalSavings(currentMonthSummary, userProfileID);
 		
 		uerAccessor.getCurrentYearTotalExpense(currentYearSummary, userProfileID);
-		uirAccessor.getCurrentYearTotalIncome(currentYearSummary, userProfileID);
+	//	uirAccessor.getCurrentYearTotalIncome(currentYearSummary, userProfileID);
 		usrAccessor.getCurrentYearTotalSavings(currentYearSummary, userProfileID);
 		
 		uerAccessor.getCurrentMonthAllExpense(userExpensePerCategory, dateUtil.getCurrentMonth(), 

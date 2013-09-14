@@ -1,8 +1,6 @@
 package rest;
 
-import model.CurrentMonthSummary;
 import model.CurrentYearSummary;
-import model.LastMonthSummary;
 import restImpl.serviceResponse.UserIncomeWSResponse;
 
 public interface UserIncomeWebService {
@@ -11,9 +9,11 @@ public interface UserIncomeWebService {
 														int month,
 														int year);
 	
-	public UserIncomeWSResponse getCurrentMonthTotalIncome(CurrentMonthSummary summary, 
-																int id);
-	public UserIncomeWSResponse getCurrentYearTotalIncome(CurrentYearSummary summary, int id);
+	public UserIncomeWSResponse getCurrentMonthTotalIncome(int userProfileId, 
+														   int month,
+														   int year);
+	
+	public UserIncomeWSResponse getCurrentYearTotalIncome(int userProfileId, int year);
 	
 
 }
