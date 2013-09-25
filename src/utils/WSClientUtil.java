@@ -19,8 +19,8 @@ public class WSClientUtil {
 			Client client = Client.create();		 
 			WebResource webResource = client.resource(URI); 
 			ClientResponse response = webResource.path(path).
-										queryParams(params).
-										accept("application/json").get(ClientResponse.class);
+									  queryParams(params).
+									  accept("application/json").get(ClientResponse.class);
  
 			if (response.getStatus() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : "

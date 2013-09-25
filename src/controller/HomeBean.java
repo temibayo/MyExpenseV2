@@ -18,6 +18,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 
+import restImpl.serviceResponse.UserExpenseWSResponse;
 import restImpl.serviceResponse.UserIncomeWSResponse;
 import restImpl.serviceResponse.UserProfileWSResponse;
 
@@ -44,6 +45,8 @@ import model.UserExpensePerCategory;
 @RequestScoped
 public class HomeBean{
 	private String username;
+	
+	//Consider using more intuitive names like lastMonthSummaryWidget
 	private LastMonthSummary lastMonthSummary;
 	private CurrentMonthSummary currentMonthSummary;
 	private DateUtil dateUtil;
@@ -55,11 +58,13 @@ public class HomeBean{
 	
 	private int userProfileID;
 	
-	private final String INCOME_WS_URI = 
+	private static final String INCOME_WS_URI = 
 						"http://localhost/MyExpenseVersion2/restImpl/incomeWebService";
-	private final String INCOME_WS_PATH = "lastMonthTotalIncome";
-	private final String CURRENT_MONTH_PATH = "currentMonthTotalIncome";
-	private final String CURRENT_YEAR_PATH = "currentYearTotalIncome";
+	private static final String EXPENSE_WS_URI = 
+						"http://localhost/MyExpenseVersion2/restImpl/expenseWebService";
+	private static final String LAST_MONTH_RESOURCE = "lastMonthTotal";
+	private static final String CURRENT_MONTH_RESOURCE = "currentMonthTotal";
+	private static final String CURRENT_YEAR_RESOURCE = "currentYearTotal";
 	
 	@ManagedProperty(value="#{userProfileBean}")
 	private UserProfileBean upBean;
@@ -97,8 +102,12 @@ public class HomeBean{
 		UserIncomeWSResponse wsResponse = new UserIncomeWSResponse();
 		UserIncomeWSResponse currentMonthIncome = new UserIncomeWSResponse();
 		UserIncomeWSResponse currentYearIncome = new UserIncomeWSResponse();
+		UserExpenseWSResponse lastMonthExpense = new UserExpenseWSResponse();
+		UserExpenseWSResponse currentMonthExpense = new UserExpenseWSResponse();
+		UserExpenseWSResponse currentYearExpense = new UserExpenseWSResponse();
 		ObjectMapper mapper = new ObjectMapper();
-				
+		
+		//HINT: COnsider making dateUtil an Abstract or static class
 		DateUtil dateUtil = new DateUtil();  
 		String lastMonthDate = Integer.toString(dateUtil.getLastMonth());
 		String lastMonthYearDate = Integer.toString(dateUtil.getLastMonthYear());
@@ -108,31 +117,46 @@ public class HomeBean{
 		WSClientUtil clientUtil = new WSClientUtil();		
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		
+		//Get Last Months Income, Expense and Savings from WebService	
 		queryParams.add("month", lastMonthDate);
 		queryParams.add("year", lastMonthYearDate);
 		queryParams.add("userID", userIdAsString);
 		String totalIncomeResponse = clientUtil.getWSResponse(queryParams, 
-													INCOME_WS_URI, INCOME_WS_PATH);
+													INCOME_WS_URI, LAST_MONTH_RESOURCE);
+		String lastMonthExpenseResponse = clientUtil.getWSResponse(queryParams, 
+													EXPENSE_WS_URI, LAST_MONTH_RESOURCE);
 		
+		//Get Current Months Income Expense and Savings
 		queryParams.clear();
 		queryParams.add("month", currentMonthDate);
 		queryParams.add("year", currentYearDate);
 		queryParams.add("userID", userIdAsString);
 		String currentMonthIncomeResponse = clientUtil.getWSResponse(queryParams, 
-													INCOME_WS_URI, CURRENT_MONTH_PATH);
+													INCOME_WS_URI, CURRENT_MONTH_RESOURCE);
+		String currentMonthExpenseResponse = clientUtil.getWSResponse(queryParams, 
+													EXPENSE_WS_URI, CURRENT_MONTH_RESOURCE);
 		
+		//Get Current Years Income Expense and Savings
 		queryParams.clear();
 		queryParams.add("year", Integer.toString(dateUtil.getCurrentYear()));
 		queryParams.add("userID", Integer.toString(userProfileID));
 		String currentYearIncomeResponse = clientUtil.getWSResponse(queryParams,
-													INCOME_WS_URI, CURRENT_YEAR_PATH);
+													INCOME_WS_URI, CURRENT_YEAR_RESOURCE);
+		String currentYearExpenseResponse = clientUtil.getWSResponse(queryParams,
+													EXPENSE_WS_URI, CURRENT_YEAR_RESOURCE);
 		
+				
 		
 		try 
-		{
+		{	
+			//Convert String Web Service response back to Java Objects
 			wsResponse = mapper.readValue(totalIncomeResponse, UserIncomeWSResponse.class);			
 			currentMonthIncome = mapper.readValue(currentMonthIncomeResponse, UserIncomeWSResponse.class);			
+			currentMonthExpense = mapper.readValue(currentMonthExpenseResponse, UserExpenseWSResponse.class);
+			
 			currentYearIncome = mapper.readValue(currentYearIncomeResponse, UserIncomeWSResponse.class);
+			currentYearExpense = mapper.readValue(currentYearExpenseResponse, UserExpenseWSResponse.class);
+			lastMonthExpense = mapper.readValue(lastMonthExpenseResponse, UserExpenseWSResponse.class);
 
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -143,33 +167,25 @@ public class HomeBean{
 		}
 		
 		lastMonthSummary.setIncome(wsResponse.getLastMonthSummary().getIncome());
+		lastMonthSummary.setExpense(lastMonthExpense.getLastMonthSummary().getExpense());
+		
 		currentMonthSummary.setIncome(currentMonthIncome.getCurrentMonthSummary().getIncome());
+		currentMonthSummary.setExpense(currentMonthExpense.getCurrentMonthSummary().getExpense());
+		
 		currentYearSummary.setIncome(currentYearIncome.getCurrentYearSummary().getIncome());
+		currentYearSummary.setExpense(currentYearExpense.getCurrentYearSummary().getExpense());
 		
-
-		  
+		
 	
-		
-		
-		
-		
-		
-		
-		
-		UserIncomeRecordAccessor uirAccessor = new UserIncomeRecordAccessor();
 		UserExpenseRecordAccessor uerAccessor = new UserExpenseRecordAccessor();
 		UserSavingsRecordAccessor usrAccessor = new UserSavingsRecordAccessor();
 		
-	//	DataAccessResult dar = uirAccessor.getLastMonthTotalIncome(lastMonthSummary, userProfileID);
-		DataAccessResult dar = uerAccessor.getLastMonthTotalExpense(lastMonthSummary, userProfileID);
+
 		usrAccessor.getLastMonthTotalSavings(lastMonthSummary, userProfileID);
 		
-		uerAccessor.getCurrentMonthTotalExpense(currentMonthSummary, userProfileID);
-	//	uirAccessor.getCurrentMonthTotalIncome(currentMonthSummary, userProfileID);
 		usrAccessor.getCurrentMonthTotalSavings(currentMonthSummary, userProfileID);
 		
 		uerAccessor.getCurrentYearTotalExpense(currentYearSummary, userProfileID);
-	//	uirAccessor.getCurrentYearTotalIncome(currentYearSummary, userProfileID);
 		usrAccessor.getCurrentYearTotalSavings(currentYearSummary, userProfileID);
 		
 		uerAccessor.getCurrentMonthAllExpense(userExpensePerCategory, dateUtil.getCurrentMonth(), 
@@ -199,10 +215,7 @@ public class HomeBean{
         if(expenseString == null){
         	expenseString = "0";	// Fixes a bug where BigDecimal init threw null pointer exception
         }
-               
         expense = new BigDecimal(expenseString);
-       
-     
         meterGaugeModel = new MeterGaugeChartModel(expense, intervals);  
     }  
 	
@@ -213,65 +226,40 @@ public class HomeBean{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-
 	public LastMonthSummary getLastMonthSummary() {
 		return lastMonthSummary;
 	}
-
-
 	public void setLastMonthSummary(LastMonthSummary lastMonthSummary) {
 		this.lastMonthSummary = lastMonthSummary;
 	}
-
-
 	public CurrentMonthSummary getCurrentMonthSummary() {
 		return currentMonthSummary;
 	}
-
-
 	public void setCurrentMonthSummary(CurrentMonthSummary currentMonthSummary) {
 		this.currentMonthSummary = currentMonthSummary;
 	}
-
-
 	public CurrentYearSummary getCurrentYearSummary() {
 		return currentYearSummary;
 	}
-
-
 	public void setCurrentYearSummary(CurrentYearSummary currentYearSummary) {
 		this.currentYearSummary = currentYearSummary;
 	}
-
-
 	public List<UserExpensePerCategory> getUserExpensePerCategory() {
 		return userExpensePerCategory;
 	}
-
-
 	public void setUserExpensePerCategory(
 			List<UserExpensePerCategory> userExpensePerCategory) {
 		this.userExpensePerCategory = userExpensePerCategory;
 	}
-
-
 	public String getRenderBarChart() {
 		return renderBarChart;
 	}
-	
-
-    
     public MeterGaugeChartModel getMeterGaugeModel() {
     	return meterGaugeModel;
    	}
-
-
 	public BigDecimal getExpense() {
 		return expense;
 	}
-
-
 	public void setUpBean(UserProfileBean upBean) {
 		this.upBean = upBean;
 	}

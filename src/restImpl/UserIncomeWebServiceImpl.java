@@ -19,7 +19,7 @@ import restImpl.serviceResponse.UserProfileWSResponse;
 public class UserIncomeWebServiceImpl implements UserIncomeWebService {
 
 	@GET
-	@Path("/lastMonthTotalIncome")
+	@Path("/lastMonthTotal")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserIncomeWSResponse getLastMonthTotalIncome(@QueryParam("userID") final int userProfileId,
 														@QueryParam("month") final int month,
@@ -38,7 +38,7 @@ public class UserIncomeWebServiceImpl implements UserIncomeWebService {
 	}
 	
 	@GET
-	@Path("/currentMonthTotalIncome")
+	@Path("/currentMonthTotal")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserIncomeWSResponse getCurrentMonthTotalIncome(@QueryParam("userID") final int userProfileId,
 														   @QueryParam("month") final int month,
@@ -59,7 +59,7 @@ public class UserIncomeWebServiceImpl implements UserIncomeWebService {
 	}
 
 	@GET
-	@Path("/currentYearTotalIncome")
+	@Path("/currentYearTotal")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserIncomeWSResponse getCurrentYearTotalIncome(@QueryParam("userID") final int userProfileId, 
 														  @QueryParam("year") final int year) {
