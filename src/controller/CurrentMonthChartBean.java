@@ -19,6 +19,7 @@ import utils.Constants;
 
 import dataAccessor.UserExpenseRecordAccessor;
 
+//This class is used to populate the All Expense Bar Chart on the loggedin Homepage
 @ManagedBean
 public class CurrentMonthChartBean {
 	private List<UserExpensePerCategory> userExpense;
@@ -53,14 +54,6 @@ public class CurrentMonthChartBean {
         	expenseCategory.set(constants.getCategory(uepc.getCategoryID()), Double.parseDouble(uepc.getExpense()));
         }
         
-/*
-        expenseCategory.set("Food", 120);
-        expenseCategory.set("Internet", 100);
-        expenseCategory.set("Rent", 44);
-        expenseCategory.set("Gas", 150);
-        expenseCategory.set("Mortgage", 25);
-*/
-
         categoryModel.addSeries(expenseCategory);
     }
 

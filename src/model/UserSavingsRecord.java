@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class UserSavingsRecord {
+public class UserSavingsRecord implements CommonRecord{
 	private String date;
 	private String source;
 	private String notes;

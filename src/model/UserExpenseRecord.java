@@ -5,7 +5,7 @@ import java.util.Date;
 import utils.Cat;
 
 
-public class UserExpenseRecord {
+public class UserExpenseRecord implements CommonRecord{
 	
 	private String userProfileID;
 	private String date; 			//Format of date is yyyy-mm-dd

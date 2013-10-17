@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.codehaus.jackson.JsonParseException;
@@ -18,38 +16,28 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 
+import restImpl.serviceResponse.CurrentMonthAllExpenseWSResponse;
 import restImpl.serviceResponse.UserExpenseWSResponse;
 import restImpl.serviceResponse.UserIncomeWSResponse;
-import restImpl.serviceResponse.UserProfileWSResponse;
+import restImpl.serviceResponse.UserSavingsWSResponse;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import utils.DateUtil;
+import utils.SummaryType;
 import utils.WSClientUtil;
-
-import dataAccessor.DataAccessResult;
-import dataAccessor.UserExpenseRecordAccessor;
-import dataAccessor.UserIncomeRecordAccessor;
-import dataAccessor.UserSavingsRecordAccessor;
 
 import model.CurrentMonthSummary;
 import model.CurrentYearSummary;
 import model.LastMonthSummary;
 import model.UserExpensePerCategory;
 
-
 @ManagedBean
 @RequestScoped
 public class HomeBean{
 	private String username;
-	
-	//Consider using more intuitive names like lastMonthSummaryWidget
 	private LastMonthSummary lastMonthSummary;
 	private CurrentMonthSummary currentMonthSummary;
-	private DateUtil dateUtil;
 	private CurrentYearSummary currentYearSummary;
 	private List<UserExpensePerCategory> userExpensePerCategory;
 	private String renderBarChart;
@@ -62,29 +50,22 @@ public class HomeBean{
 						"http://localhost/MyExpenseVersion2/restImpl/incomeWebService";
 	private static final String EXPENSE_WS_URI = 
 						"http://localhost/MyExpenseVersion2/restImpl/expenseWebService";
+	private static final String SAVINGS_WS_URI = 
+						"http://localhost/MyExpenseVersion2/restImpl/savingsWebService";	
 	private static final String LAST_MONTH_RESOURCE = "lastMonthTotal";
 	private static final String CURRENT_MONTH_RESOURCE = "currentMonthTotal";
 	private static final String CURRENT_YEAR_RESOURCE = "currentYearTotal";
+	private static final String CURRENT_MONTH_ALL_EXPENSE_RESOURCE  =
+														"currentMonthAllExpense";
 	
 	@ManagedProperty(value="#{userProfileBean}")
 	private UserProfileBean upBean;
 	
 	public HomeBean(){		
-		dateUtil = new DateUtil();
 		lastMonthSummary = new LastMonthSummary();
 		currentMonthSummary = new CurrentMonthSummary();
 		currentYearSummary = new CurrentYearSummary();
 		userExpensePerCategory = new ArrayList<UserExpensePerCategory>();
-		
-		lastMonthSummary.setYear(dateUtil.getLastMonthYear());
-		lastMonthSummary.setMonth(dateUtil.getLastMonth());
-		lastMonthSummary.setMonthString(dateUtil.getLastMonthString());
-		
-		currentMonthSummary.setYear(dateUtil.getCurrentYear());
-		currentMonthSummary.setMonth(dateUtil.getCurrentMonth());
-		currentMonthSummary.setMonthString(dateUtil.getCurrentMonthString());
-		
-		currentYearSummary.setYear(dateUtil.getCurrentYear());
 	}
 	
 	
@@ -99,13 +80,20 @@ public class HomeBean{
 		userProfileID = upBean.getUserID();
 		String userIdAsString = Integer.toString(userProfileID);
 		
-		UserIncomeWSResponse wsResponse = new UserIncomeWSResponse();
-		UserIncomeWSResponse currentMonthIncome = new UserIncomeWSResponse();
-		UserIncomeWSResponse currentYearIncome = new UserIncomeWSResponse();
+		UserIncomeWSResponse lastMonthIncome = new UserIncomeWSResponse();
 		UserExpenseWSResponse lastMonthExpense = new UserExpenseWSResponse();
+		UserSavingsWSResponse lastMonthSavings = new UserSavingsWSResponse();
+
+		UserIncomeWSResponse currentMonthIncome = new UserIncomeWSResponse();
 		UserExpenseWSResponse currentMonthExpense = new UserExpenseWSResponse();
+		UserSavingsWSResponse currentMonthSavings = new UserSavingsWSResponse();
+		CurrentMonthAllExpenseWSResponse currentMonthAllExpense = 
+											new CurrentMonthAllExpenseWSResponse();
+		
+		UserIncomeWSResponse currentYearIncome = new UserIncomeWSResponse();
 		UserExpenseWSResponse currentYearExpense = new UserExpenseWSResponse();
-		ObjectMapper mapper = new ObjectMapper();
+		UserSavingsWSResponse currentYearSavings = new UserSavingsWSResponse();
+		
 		
 		//HINT: COnsider making dateUtil an Abstract or static class
 		DateUtil dateUtil = new DateUtil();  
@@ -117,7 +105,7 @@ public class HomeBean{
 		WSClientUtil clientUtil = new WSClientUtil();		
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		
-		//Get Last Months Income, Expense and Savings from WebService	
+		//Get Last Months data from WebService	
 		queryParams.add("month", lastMonthDate);
 		queryParams.add("year", lastMonthYearDate);
 		queryParams.add("userID", userIdAsString);
@@ -125,8 +113,10 @@ public class HomeBean{
 													INCOME_WS_URI, LAST_MONTH_RESOURCE);
 		String lastMonthExpenseResponse = clientUtil.getWSResponse(queryParams, 
 													EXPENSE_WS_URI, LAST_MONTH_RESOURCE);
+		String lastMonthSavingsResponse = clientUtil.getWSResponse(queryParams, 
+													SAVINGS_WS_URI, LAST_MONTH_RESOURCE);
 		
-		//Get Current Months Income Expense and Savings
+		//Get Current Months data from WebService
 		queryParams.clear();
 		queryParams.add("month", currentMonthDate);
 		queryParams.add("year", currentYearDate);
@@ -135,8 +125,13 @@ public class HomeBean{
 													INCOME_WS_URI, CURRENT_MONTH_RESOURCE);
 		String currentMonthExpenseResponse = clientUtil.getWSResponse(queryParams, 
 													EXPENSE_WS_URI, CURRENT_MONTH_RESOURCE);
-		
-		//Get Current Years Income Expense and Savings
+		String currentMonthSavingsResponse = clientUtil.getWSResponse(queryParams,
+													SAVINGS_WS_URI, CURRENT_MONTH_RESOURCE);													
+		String currentMonthAllExpenseResponse = clientUtil.getWSResponse(queryParams,
+													EXPENSE_WS_URI,
+													CURRENT_MONTH_ALL_EXPENSE_RESOURCE);
+													
+		//Get Current Year data from webservice
 		queryParams.clear();
 		queryParams.add("year", Integer.toString(dateUtil.getCurrentYear()));
 		queryParams.add("userID", Integer.toString(userProfileID));
@@ -144,19 +139,28 @@ public class HomeBean{
 													INCOME_WS_URI, CURRENT_YEAR_RESOURCE);
 		String currentYearExpenseResponse = clientUtil.getWSResponse(queryParams,
 													EXPENSE_WS_URI, CURRENT_YEAR_RESOURCE);
-		
+		String currentYearSavingsResponse = clientUtil.getWSResponse(queryParams,
+													SAVINGS_WS_URI, CURRENT_YEAR_RESOURCE);
 				
 		
 		try 
 		{	
-			//Convert String Web Service response back to Java Objects
-			wsResponse = mapper.readValue(totalIncomeResponse, UserIncomeWSResponse.class);			
+			//Deserialize String Web Service responses back to Java Objects
+			ObjectMapper mapper = new ObjectMapper();
+			lastMonthIncome = mapper.readValue(totalIncomeResponse, UserIncomeWSResponse.class);
+			lastMonthExpense = mapper.readValue(lastMonthExpenseResponse, UserExpenseWSResponse.class);
+			lastMonthSavings = mapper.readValue(lastMonthSavingsResponse, UserSavingsWSResponse.class);
+			
 			currentMonthIncome = mapper.readValue(currentMonthIncomeResponse, UserIncomeWSResponse.class);			
 			currentMonthExpense = mapper.readValue(currentMonthExpenseResponse, UserExpenseWSResponse.class);
+			currentMonthSavings = mapper.readValue(currentMonthSavingsResponse, UserSavingsWSResponse.class);
+			
+			//This line does not work when you have records for only one category. Need to fix
+			currentMonthAllExpense = mapper.readValue(currentMonthAllExpenseResponse, CurrentMonthAllExpenseWSResponse.class);
 			
 			currentYearIncome = mapper.readValue(currentYearIncomeResponse, UserIncomeWSResponse.class);
 			currentYearExpense = mapper.readValue(currentYearExpenseResponse, UserExpenseWSResponse.class);
-			lastMonthExpense = mapper.readValue(lastMonthExpenseResponse, UserExpenseWSResponse.class);
+			currentYearSavings = mapper.readValue(currentYearSavingsResponse, UserSavingsWSResponse.class);
 
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -166,32 +170,40 @@ public class HomeBean{
 			e.printStackTrace();
 		}
 		
-		lastMonthSummary.setIncome(wsResponse.getLastMonthSummary().getIncome());
-		lastMonthSummary.setExpense(lastMonthExpense.getLastMonthSummary().getExpense());
+		//Catch null reference exception on all widget values
+		//Finally, set the values in the last Month Widget 
+		if(validateWSResponseObjects(lastMonthIncome, lastMonthExpense, 
+										lastMonthSavings, SummaryType.LAST_MONTH)){
+			lastMonthSummary.setMonthString(dateUtil.getLastMonthString());
+			lastMonthSummary.setIncome(lastMonthIncome.getLastMonthSummary().getIncome());
+			lastMonthSummary.setExpense(lastMonthExpense.getLastMonthSummary().getExpense());
+			lastMonthSummary.setSavings(lastMonthSavings.getLastMonthSummary().getSavings());
+		}
 		
-		currentMonthSummary.setIncome(currentMonthIncome.getCurrentMonthSummary().getIncome());
-		currentMonthSummary.setExpense(currentMonthExpense.getCurrentMonthSummary().getExpense());
+		//Finally, set the values in the Current Month Widget
+		if(validateWSResponseObjects(currentMonthIncome, currentMonthExpense,
+									 currentMonthSavings, SummaryType.CURRENT_MONTH)){
+			currentMonthSummary.setMonthString(dateUtil.getCurrentMonthString());
+			currentMonthSummary.setIncome(currentMonthIncome.getCurrentMonthSummary().getIncome());
+			currentMonthSummary.setExpense(currentMonthExpense.getCurrentMonthSummary().getExpense());
+			currentMonthSummary.setSavings(currentMonthSavings.getCurrentMonthSummary().getSavings());
+		}
 		
-		currentYearSummary.setIncome(currentYearIncome.getCurrentYearSummary().getIncome());
-		currentYearSummary.setExpense(currentYearExpense.getCurrentYearSummary().getExpense());
+		//Finally set the values in the Current Year Widget. This widget is currently not used
+		if(validateWSResponseObjects(currentYearIncome, currentYearExpense,
+									 currentYearSavings, SummaryType.CURRENT_YEAR)){
+			currentYearSummary.setYear(dateUtil.getCurrentYear());
+			currentYearSummary.setIncome(currentYearIncome.getCurrentYearSummary().getIncome());
+			currentYearSummary.setExpense(currentYearExpense.getCurrentYearSummary().getExpense());
+			currentYearSummary.setSavings(currentYearSavings.getCurrentYearSummary().getSavings());
+		}
 		
-		
-	
-		UserExpenseRecordAccessor uerAccessor = new UserExpenseRecordAccessor();
-		UserSavingsRecordAccessor usrAccessor = new UserSavingsRecordAccessor();
-		
-
-		usrAccessor.getLastMonthTotalSavings(lastMonthSummary, userProfileID);
-		
-		usrAccessor.getCurrentMonthTotalSavings(currentMonthSummary, userProfileID);
-		
-		uerAccessor.getCurrentYearTotalExpense(currentYearSummary, userProfileID);
-		usrAccessor.getCurrentYearTotalSavings(currentYearSummary, userProfileID);
-		
-		uerAccessor.getCurrentMonthAllExpense(userExpensePerCategory, dateUtil.getCurrentMonth(), 
-												dateUtil.getCurrentYear(), userProfileID);
-		
-		
+		//Set the values for the Homepage Expense Table
+		//BUG- catch null ref exception - FIXED!
+		if(currentMonthAllExpense.getUserExpensePerCategory() != null){
+			userExpensePerCategory.addAll(currentMonthAllExpense.getUserExpensePerCategory());
+		}
+		//Set the values in the Expense Meter
 		createMeterGaugeModel();
 		
 		if(userExpensePerCategory.size() > 0){
@@ -200,6 +212,37 @@ public class HomeBean{
 		else{
 			renderBarChart = "NO";
 		}
+	}
+	
+	private boolean validateWSResponseObjects(UserIncomeWSResponse income,
+											  UserExpenseWSResponse expense,
+											  UserSavingsWSResponse savings,
+											  SummaryType type){
+		boolean result = true;
+		if(type.equals(SummaryType.LAST_MONTH)){
+			if(income.getLastMonthSummary() == null || 
+					expense.getLastMonthSummary() == null ||
+					savings.getLastMonthSummary() == null){
+				result = false;
+			}
+		}
+		else if(type.equals(SummaryType.CURRENT_MONTH)){
+			if(income.getCurrentMonthSummary() == null ||
+					expense.getCurrentMonthSummary() == null ||
+					savings.getCurrentMonthSummary() == null){
+				result = false;
+			}
+		}
+		else if(type.equals(SummaryType.CURRENT_YEAR)){
+			if(income.getCurrentYearSummary() == null ||
+					expense.getCurrentYearSummary() == null ||
+					savings.getCurrentYearSummary() == null){
+				result = false;
+			}
+		}
+
+		return result;
+
 	}
 	
     private void createMeterGaugeModel() {  

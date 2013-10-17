@@ -7,8 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
-import utils.Cat;
-
 import dataAccessor.DataAccessResult;
 import dataAccessor.UserExpenseRecordAccessor;
 import model.UserExpenseRecord;

@@ -1,5 +1,8 @@
 package restImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -10,7 +13,9 @@ import dataAccessor.UserExpenseRecordAccessor;
 import model.CurrentMonthSummary;
 import model.CurrentYearSummary;
 import model.LastMonthSummary;
+import model.UserExpensePerCategory;
 import rest.UserExpenseWebService;
+import restImpl.serviceResponse.CurrentMonthAllExpenseWSResponse;
 import restImpl.serviceResponse.UserExpenseWSResponse;
 
 @Path("expenseWebService")
@@ -34,8 +39,6 @@ public class UserExpenseWebServiceImpl implements UserExpenseWebService{
 		accessor.getLastMonthTotalExpense(summary, userProfileId);
 		
 		response.setLastMonthSummary(summary);
-		
-		
 		
 		return response;
 	}
@@ -75,6 +78,23 @@ public class UserExpenseWebServiceImpl implements UserExpenseWebService{
 		accessor.getCurrentYearTotalExpense(summary, userProfileId);
 		
 		response.setCurrentYearSummary(summary);
+		return response;
+	}
+
+	@GET
+	@Path("/currentMonthAllExpense")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CurrentMonthAllExpenseWSResponse getCurrentMonthAllExpense(@QueryParam("userID") final int userProfileId, 
+															@QueryParam("month") final int month, 
+															@QueryParam("year") final int year) {
+		
+		CurrentMonthAllExpenseWSResponse response = new CurrentMonthAllExpenseWSResponse();
+		List<UserExpensePerCategory> expenseByCategory = new ArrayList<UserExpensePerCategory>();
+		
+		UserExpenseRecordAccessor accessor = new UserExpenseRecordAccessor();
+		accessor.getCurrentMonthAllExpense(expenseByCategory, month, year, userProfileId);
+		
+		response.setUserExpensePerCategory(expenseByCategory);
 		return response;
 	}
 

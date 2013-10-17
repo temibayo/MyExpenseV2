@@ -1,11 +1,23 @@
 package controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.ws.rs.core.MultivaluedMap;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import restImpl.serviceResponse.AddIncomeWSResponse;
+
+import utils.WSClientUtil;
+
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import dataAccessor.DataAccessResult;
 import dataAccessor.UserIncomeRecordAccessor;
@@ -21,6 +33,11 @@ public class AddIncomeRecordBean {
 	private String amount;
 	private String username;
 	private BigDecimal numericAmount;
+	
+	private static final String ADD_INCOME_RESOURCE = "addRecord";
+	private static final String INCOME_WS_URI =
+									"http://localhost/MyExpenseVersion2/restImpl/incomeWebService";
+	
 	
 	public AddIncomeRecordBean(){
 		
@@ -65,23 +82,49 @@ public class AddIncomeRecordBean {
 			return(null); //redisplay the form with the error message
 		}
 		else{
-			UserIncomeRecord uir = new UserIncomeRecord();
-			UserIncomeRecordAccessor uirAccessor = new UserIncomeRecordAccessor();
-			DataAccessResult dar = new DataAccessResult();
-			uir.setjDate(date);
-			uir.setSource(source);
-			uir.setNotes(notes);
-			uir.setAmount(amount);
-			uir.setUsername(username);
-			dar = uirAccessor.addNewUserIncomeRecord(uir);
-		
-			if(dar.getStatus().equals("Success")){
+			AddIncomeWSResponse response = new AddIncomeWSResponse();
+			MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
+			
+			String dateAsString = date.toString();
+			//date will be in this format Mon Oct 14 00:00:00 EDT 2013
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(dateAsString.substring(0, 10));
+			sb.append(",");
+			sb.append(dateAsString.substring(23, 28));
+			String formattedDateString = sb.toString();
+			formattedDateString.trim();
+			
+			queryParams.add("date", formattedDateString);
+			queryParams.add("source", source);
+			queryParams.add("notes", notes);
+			queryParams.add("amount", amount);
+			queryParams.add("username", username);
+			
+			WSClientUtil client = new WSClientUtil();
+			String addIncomeResponse = client.getWSPostResponse(queryParams, INCOME_WS_URI,
+																ADD_INCOME_RESOURCE);
+			
+			
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				response = mapper.readValue(addIncomeResponse, AddIncomeWSResponse.class);
+			} catch (JsonParseException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if(response.getDataAccessResult().getStatus().equals("Success")){
 				context.addMessage(null, new FacesMessage("SUCCESS: Income record has been added"));
 				return (null);
 			}
-			else {
-				return "addRecord";
+			else{
+				return "addRecord"; //This will simply redisplay the form
 			}
+			
 		}
 	}
 	public String getUsername() {
